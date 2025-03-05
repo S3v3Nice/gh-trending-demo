@@ -1,0 +1,32 @@
+services:
+  node-server:
+    image: node:22-alpine
+    container_name: gh-trending_node-server
+    ports:
+      - ${PORT}:3000
+    restart: unless-stopped
+    volumes:
+      - ./:/var/www
+    working_dir: /var/www
+    command: sh -c 'if [ "${DEBUG}" = "true" ]; then npm run dev; else npm run prod; fi'
+    depends_on:
+      postgres:
+        condition: service_healthy
+
+  postgres:
+    image: postgres
+    container_name: gh-trending_postgres
+    ports:
+      - ${DB_PORT}:5432
+    restart: unless-stopped
+    volumes:
+      - ./docker/data/postgres:/var/lib/postgresql/data
+    environment:
+      POSTGRES_DB: ${DB_DATABASE}
+      POSTGRES_USER: ${DB_USER}
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+    healthcheck:
+      test: [ "CMD-SHELL", "sh -c 'pg_isready -U ${DB_USER} -d ${DB_DATABASE}'" ]
+      interval: 5s
+      timeout: 3s
+      retries: 10
