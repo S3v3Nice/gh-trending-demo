@@ -12,5 +12,5 @@ if [ -z `docker compose ps -q node-server` ] || [ -z `docker ps -q --no-trunc | 
   docker compose run --rm node-server $MIGRATE_COMMAND
   docker compose down
 else
-  docker exec -it node-server $MIGRATE_COMMAND
+  docker compose exec -it node-server $MIGRATE_COMMAND
 fi
