@@ -1,3 +1,6 @@
+include .env
+export
+
 setup:
 	sh bin/setup.sh
 
@@ -6,3 +9,6 @@ up:
 
 down:
 	docker compose down
+
+migrate:
+	sh bin/migrate.sh
