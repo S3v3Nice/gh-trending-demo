@@ -1,5 +1,6 @@
 import * as repositoryService from '../services/repository-service'
 import {Request, Response} from 'express'
+import SyncError from '../errors/sync-error'
 
 export async function getAll(req: Request, res: Response) {
     const repositories = await repositoryService.getAll()
@@ -20,5 +21,12 @@ export async function getById(req: Request, res: Response) {
 }
 
 export async function sync(req: Request, res: Response) {
-    res.json({success: true})
+    try {
+        await repositoryService.sync()
+        res.json({success: true})
+    } catch (error) {
+        if (error instanceof SyncError) {
+            res.status(error.statusCode).json({success: false, error: error.message})
+        }
+    }
 }

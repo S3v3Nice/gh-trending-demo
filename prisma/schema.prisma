@@ -17,9 +17,8 @@ model Repository {
     id          Int      @id
     name        String
     owner_name  String
-    description String
+    description String?
     stars_count Int
-    language    String
     created_at  DateTime
     updated_at  DateTime
     pushed_at   DateTime
