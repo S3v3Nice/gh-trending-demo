@@ -22,7 +22,7 @@ export async function getById(req: Request, res: Response) {
 
 export async function sync(req: Request, res: Response) {
     try {
-        await repositoryService.sync()
+        await repositoryService.forceSync()
         res.json({success: true})
     } catch (error) {
         if (error instanceof SyncError) {

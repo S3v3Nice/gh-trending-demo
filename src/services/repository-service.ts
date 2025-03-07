@@ -9,6 +9,7 @@ const SYNC_COUNT = Number(process.env.SYNC_REPO_COUNT ?? 1000)
 const SYNC_DELAY = Number(process.env.SYNC_DELAY ?? 60)
 
 const prisma = new PrismaClient()
+let syncTimeout: NodeJS.Timeout | null = null
 
 export async function getAll() {
     return prisma.repository.findMany({
@@ -28,21 +29,63 @@ export async function getById(id: number) {
     })
 }
 
-export async function sync() {
-    const repositories = await retrieveRepositories()
-    await prisma.$executeRaw`TRUNCATE TABLE repositories`
-    await prisma.repository.createMany({
-        data: repositories.map(repo => ({
-            id: repo['id'],
-            name: repo['name'],
-            owner_name: repo['owner']['login'],
-            description: repo['description'] ?? null,
-            stars_count: repo['stargazers_count'],
-            created_at: repo['created_at'],
-            updated_at: repo['updated_at'],
-            pushed_at: repo['pushed_at']
-        }))
-    })
+export async function forceSync() {
+    await sync()
+    startAutoSyncInterval()
+}
+
+export function startAutoSync() {
+    autoSyncFunction()
+    startAutoSyncInterval()
+}
+
+function startAutoSyncInterval() {
+    if (syncTimeout) {
+        clearTimeout(syncTimeout)
+    }
+    syncTimeout = setInterval(autoSyncFunction, SYNC_DELAY * 60 * 1000)
+}
+
+async function autoSyncFunction() {
+    try {
+        await sync()
+    } catch (error) {
+        const errorMessage = (error as SyncError).message
+        console.error(`GitHub synchronization failed:\n${errorMessage}`)
+    }
+}
+
+async function sync() {
+    try {
+        const repositories = await retrieveRepositories()
+        await prisma.$executeRaw`TRUNCATE TABLE repositories`
+        await prisma.repository.createMany({
+            data: repositories.map(repo => ({
+                id: repo['id'],
+                name: repo['name'],
+                owner_name: repo['owner']['login'],
+                description: repo['description'] ?? null,
+                stars_count: repo['stargazers_count'],
+                created_at: repo['created_at'],
+                updated_at: repo['updated_at'],
+                pushed_at: repo['pushed_at']
+            }))
+        })
+    } catch (error) {
+        let errorMessage: string
+        let statusCode = 500
+
+        if (axios.isAxiosError(error) && error.response) {
+            errorMessage = error.response.data?.message || error.message
+            statusCode = error.response.status
+        } else if (error instanceof Error) {
+            errorMessage = error.message
+        } else {
+            errorMessage = String(error)
+        }
+
+        throw new SyncError(errorMessage, statusCode)
+    }
 }
 
 async function retrieveRepositories() {
@@ -68,22 +111,6 @@ async function retrieveRepositories() {
         )
     }
 
-    try {
-        const results = await Promise.all(requests)
-        return results.flatMap((res) => res.data.items)
-    } catch (error) {
-        let errorMessage: string
-        let statusCode = 500
-
-        if (axios.isAxiosError(error) && error.response) {
-            errorMessage = error.response.data?.message || error.message
-            statusCode = error.response.status
-        } else if (error instanceof Error) {
-            errorMessage = error.message
-        } else {
-            errorMessage = String(error)
-        }
-
-        throw new SyncError(errorMessage, statusCode)
-    }
+    const results = await Promise.all(requests)
+    return results.flatMap((res) => res.data.items)
 }
