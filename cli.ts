@@ -125,7 +125,7 @@ program
     .command('sync')
     .description('force sync repositories with GitHub')
     .action(async () => {
-        const data = await handleRequest(() => axios.get(`${API_URL}/sync`))
+        const data = await handleRequest(() => axios.post(`${API_URL}/sync`))
         if (data['success']) {
             console.log('Successfully synced repositories with GitHub!');
         } else {
