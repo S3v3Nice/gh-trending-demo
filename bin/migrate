@@ -1,0 +1,12 @@
+#!/usr/bin/env bash
+
+MIGRATE_COMMAND="npx prisma migrate $@"
+
+echo "Running $MIGRATE_COMMAND..."
+
+if [ -z `docker compose ps -q backend-express` ] || [ -z `docker ps -q --no-trunc | grep $(docker compose ps -q backend-express)` ]; then
+  docker compose run --rm backend-express $MIGRATE_COMMAND
+  docker compose down
+else
+  docker compose exec -it backend-express $MIGRATE_COMMAND
+fi

@@ -16,7 +16,7 @@ This project is a service that periodically retrieves trending repositories from
 ## Setup & Usage
 
 ### Initial Setup
-Run the following command to build the Docker images, install dependencies, create the `.env` file, set up the database password, and run migrations:
+Run the following command to perform initial setup:
 ```sh
 make setup
 ```
@@ -37,7 +37,7 @@ make down
 ### CLI Client
 You can interact with the service via the CLI client using:
 ```sh
-npx cli <command>
+sh bin/cli <command>
 ```
 
 ## API Endpoints
@@ -52,8 +52,9 @@ npx cli <command>
 
 The `.env` file contains the following configurations:
 ```env
-DEBUG=true
-PORT=3000
+APP_NAME="GitHub Trending Repositories"
+APP_DEV=true
+HTTP_PORT=3000
 
 DB_HOST=postgres
 DB_PORT=5432
@@ -62,14 +63,16 @@ DB_USER=gh_trending_user
 DB_PASSWORD=
 DB_URL="postgresql://${DB_USER}:${DB_PASSWORD}@${DB_HOST}:${DB_PORT}/${DB_DATABASE}?schema=public"
 
-# Optional: Expands the GitHub API rate limits.
+# Optional. Setting a token expands the rate limits on the GitHub requests count.
 GITHUB_TOKEN=
 
-# Number of repositories fetched per synchronization (Max: 1000).
+# Count of trending repositories retrieved from GitHub per synchronization.
+# Max value: 1000 (GitHub restrictions).
 SYNC_REPO_COUNT=1000
-
-# Delay between synchronizations (in minutes).
+# Delay between synchronizations with GitHub (in minutes).
 SYNC_DELAY=60
-```
 
-Happy coding! 🚀
+VITE_APP_NAME="${APP_NAME}"
+VITE_PORT=5173
+
+```

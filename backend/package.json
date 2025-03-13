@@ -1,21 +1,20 @@
 {
     "name": "gh-trending",
     "version": "1.0.0",
-    "main": "src/app.ts",
     "scripts": {
         "test": "echo \"Error: no test specified\" && exit 1",
         "dev": "nodemon src/app.ts",
         "prod": "ts-node src/app.ts"
     },
     "bin": {
-        "cli": "./cli.ts"
+        "cli": "cli.ts"
     },
     "author": "",
     "license": "ISC",
     "description": "",
     "dependencies": {
-        "@prisma/client": "^6.4.1",
-        "axios": "^1.8.1",
+        "@prisma/client": "^6.5.0",
+        "axios": "^1.8.2",
         "cli-table3": "^0.6.5",
         "commander": "^13.1.0",
         "dotenv": "^16.4.7",
@@ -25,7 +24,7 @@
         "@types/express": "^5.0.0",
         "@types/node": "^22.13.9",
         "nodemon": "^3.1.9",
-        "prisma": "^6.4.1",
+        "prisma": "^6.5.0",
         "ts-node": "^10.9.2",
         "typescript": "^5.8.2"
     }

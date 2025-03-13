@@ -1,0 +1,11 @@
+#!/usr/bin/env bash
+
+CLI_COMMAND="npx cli $@"
+
+CONTAINER_ID=$(docker compose ps -q backend-express)
+if [ -z "$CONTAINER_ID" ] || ! docker ps -q --no-trunc | grep -q "$CONTAINER_ID"; then
+  echo "The service is down. Please start the service first (run 'make up')" >&2
+  exit 1
+fi
+
+docker compose exec -it backend-express $CLI_COMMAND
