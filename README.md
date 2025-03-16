@@ -1,12 +1,20 @@
+<p style="text-align: center">
+  <picture>
+    <source media="(prefers-color-scheme: dark)" srcset="/frontend/public/logo.dark.svg?raw=true">
+    <img src="/frontend/public/logo.svg?raw=true" width="400" alt="GH Trending logo">
+  </picture>
+</p>
+
 # GitHub Trending Repositories Service
 
-This project is a service that periodically retrieves trending repositories from GitHub and stores them in a PostgreSQL database. It provides a REST API and a CLI client for retrieving stored repositories and triggering manual synchronization.
+This project is a full-stack service that periodically retrieves trending repositories from GitHub and stores them in a PostgreSQL database. It provides a REST API, a CLI client, and a simple frontend SPA built with Vue.js and Vite.
 
 ## Features
 - Fetch trending repositories from GitHub every `SYNC_DELAY` minutes.
 - Store retrieved repositories in PostgreSQL.
 - REST API to fetch repositories by name, ID, or retrieve all.
 - CLI client for easy interaction.
+- Full-fledged frontend SPA with repository browsing.
 - Dockerized setup for easy deployment.
 
 ## Requirements
@@ -26,7 +34,7 @@ Launch the service using:
 ```sh
 make up
 ```
-By default, the server will be accessible at: [http://localhost:3000](http://localhost:3000)
+By default, the service will be accessible at: [http://localhost:3000](http://localhost:3000)
 
 ### Stop the Service
 To stop the service, run:
@@ -48,11 +56,21 @@ sh bin/cli <command>
 | GET    | `/api/repositories/:owner/:name` | Get repository by name           |
 | POST   | `/api/repositories/sync`         | Manually trigger synchronization |
 
+## Frontend (Vue + Vite)
+
+![Frontend Screenshot](docs/screenshots/repositories.png)
+
+### Available Routes
+| Route | Description                                       |
+|-------|---------------------------------------------------|
+| `/repositories` | Displays the list of repositories with pagination |
+| `/repositories/:id` or `/repositories/:owner/:name` | Displays repository details                       |
+
 ## Environment Variables
 
 The `.env` file contains the following configurations:
 ```env
-APP_NAME="GitHub Trending Repositories"
+APP_NAME="GH Trending"
 APP_DEV=true
 HTTP_PORT=3000
 
@@ -72,7 +90,7 @@ SYNC_REPO_COUNT=1000
 # Delay between synchronizations with GitHub (in minutes).
 SYNC_DELAY=60
 
+# Frontend settings
 VITE_APP_NAME="${APP_NAME}"
 VITE_PORT=5173
-
 ```

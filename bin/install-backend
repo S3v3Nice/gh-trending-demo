@@ -1,0 +1,13 @@
+#!/usr/bin/env bash
+
+NPM_INSTALL_COMMAND="npm install $@"
+
+echo "Running $NPM_INSTALL_COMMAND..."
+
+CONTAINER_ID=$(docker compose ps -q backend-express)
+if [ -z "$CONTAINER_ID" ] || ! docker ps -q --no-trunc | grep -q "$CONTAINER_ID"; then
+  docker compose run --rm backend-express $NPM_INSTALL_COMMAND
+  docker compose down
+else
+  docker compose exec -it backend-express $NPM_INSTALL_COMMAND
+fi

@@ -1,5 +1,6 @@
 import {defineConfig, loadEnv} from 'vite'
 import vue from '@vitejs/plugin-vue'
+import tailwindcss from '@tailwindcss/vite'
 import path from 'path'
 import * as process from 'node:process'
 
@@ -27,6 +28,9 @@ export default defineConfig((configEnv) => {
                 usePolling: true
             }
         },
-        plugins: [vue()],
+        plugins: [
+            vue(),
+            tailwindcss(),
+        ],
     }
 })

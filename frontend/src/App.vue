@@ -1,32 +1,21 @@
 <script setup lang="ts">
-import HelloWorld from './components/HelloWorld.vue'
-
-const appName = import.meta.env.VITE_APP_NAME
+import Header from '@/components/Header.vue'
+import Toast from 'primevue/toast'
 </script>
 
 <template>
-  <div>
-    <a href="https://vite.dev" target="_blank">
-      <img src="/vite.svg" class="logo" alt="Vite logo" />
-    </a>
-    <a href="https://vuejs.org/" target="_blank">
-      <img src="./assets/vue.svg" class="logo vue" alt="Vue logo" />
-    </a>
-  </div>
-  <HelloWorld :msg="appName" />
+    <Toast/>
+    <div class="surface-ground">
+        <Header/>
+        <div class="page-content page-container mb-4">
+            <RouterView/>
+        </div>
+    </div>
 </template>
 
 <style scoped>
-.logo {
-  height: 6em;
-  padding: 1.5em;
-  will-change: filter;
-  transition: filter 300ms;
-}
-.logo:hover {
-  filter: drop-shadow(0 0 2em #646cffaa);
-}
-.logo.vue:hover {
-  filter: drop-shadow(0 0 2em #42b883aa);
+.page-content {
+    /* Margin to prevent the fixed header from overlapping the beginning of the page content. */
+    margin-top: var(--header-with-margin-height);
 }
 </style>
