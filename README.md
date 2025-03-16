@@ -1,20 +1,20 @@
-<p style="text-align: center">
+<p align="center">
   <picture>
     <source media="(prefers-color-scheme: dark)" srcset="/frontend/public/logo.dark.svg?raw=true">
     <img src="/frontend/public/logo.svg?raw=true" width="400" alt="GH Trending logo">
   </picture>
 </p>
 
-# GitHub Trending Repositories Service
-
-This project is a full-stack service that periodically retrieves trending repositories from GitHub and stores them in a PostgreSQL database. It provides a REST API, a CLI client, and a simple frontend SPA built with Vue.js and Vite.
+This project is a full-stack service that periodically retrieves the top N (up to 1000) most trending repositories
+from GitHub based on star count and stores them in a PostgreSQL database. It provides a REST API on Express.js,
+a CLI client, and a simple SPA built with Vue.js and Vite.
 
 ## Features
 - Fetch trending repositories from GitHub every `SYNC_DELAY` minutes.
 - Store retrieved repositories in PostgreSQL.
 - REST API to fetch repositories by name, ID, or retrieve all.
 - CLI client for easy interaction.
-- Full-fledged frontend SPA with repository browsing.
+- Simple SPA with repository browsing.
 - Dockerized setup for easy deployment.
 
 ## Requirements
