@@ -58,19 +58,21 @@ async function autoSyncFunction() {
 async function sync() {
     try {
         const repositories = await retrieveRepositories()
-        await prisma.$executeRaw`TRUNCATE TABLE repositories`
-        await prisma.repository.createMany({
-            data: repositories.map(repo => ({
-                id: repo['id'],
-                name: repo['name'],
-                owner_name: repo['owner']['login'],
-                description: repo['description'] ?? null,
-                stars_count: repo['stargazers_count'],
-                created_at: repo['created_at'],
-                updated_at: repo['updated_at'],
-                pushed_at: repo['pushed_at']
-            }))
-        })
+        await prisma.$transaction([
+            prisma.$executeRaw`TRUNCATE TABLE repositories`,
+            prisma.repository.createMany({
+                data: repositories.map(repo => ({
+                    id: repo['id'],
+                    name: repo['name'],
+                    owner_name: repo['owner']['login'],
+                    description: repo['description'] ?? null,
+                    stars_count: repo['stargazers_count'],
+                    created_at: repo['created_at'],
+                    updated_at: repo['updated_at'],
+                    pushed_at: repo['pushed_at']
+                }))
+            })
+        ]);
     } catch (error) {
         let errorMessage: string
         let statusCode = 500
