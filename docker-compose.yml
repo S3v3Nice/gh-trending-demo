@@ -46,7 +46,7 @@ services:
         image: nginxproxy/nginx-proxy:1.7
         ports:
             - "${HTTP_PORT:-80}:${HTTP_PORT:-80}"
-            - "443:443"
+            - "${HTTPS_PORT:-443}:443"
         restart: unless-stopped
         volumes:
             - ./docker/nginx/html:/usr/share/nginx/html
@@ -55,6 +55,7 @@ services:
         environment:
             TRUST_DOWNSTREAM_PROXY: false
             HTTP_PORT: ${HTTP_PORT:-80}
+            HTTPS_PORT: ${HTTPS_PORT:-443}
 
     acme-companion:
         container_name: gh-trending_nginx-proxy-acme

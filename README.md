@@ -78,6 +78,8 @@ APP_DEV=true
 APP_HOST=
 # Leave this empty if the desired HTTP port is 80.
 HTTP_PORT=3000
+# Leave this empty if the desired HTTPS port is 443.
+HTTPS_PORT=
 # Update this when you change APP_HOST or HTTP_PORT.
 APP_URL=http://localhost:3000
 
