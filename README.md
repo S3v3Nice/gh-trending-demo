@@ -72,7 +72,14 @@ The `.env` file contains the following configurations:
 ```env
 APP_NAME="GH Trending"
 APP_DEV=true
+
+# Leave this empty if the app is not publicly hosted, otherwise insert ip or domain.
+# Setting the value enables HTTPS and SSL certificate auto-renewal.
+APP_HOST=
+# Leave this empty if the desired HTTP port is 80.
 HTTP_PORT=3000
+# Update this when you change APP_HOST or HTTP_PORT.
+APP_URL=http://localhost:3000
 
 DB_HOST=postgres
 DB_PORT=5432
@@ -90,7 +97,7 @@ SYNC_REPO_COUNT=1000
 # Delay between synchronizations with GitHub (in minutes).
 SYNC_DELAY=60
 
-# Frontend settings
 VITE_APP_NAME="${APP_NAME}"
+VITE_APP_URL="${APP_URL}"
 VITE_PORT=5173
 ```

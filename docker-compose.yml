@@ -28,17 +28,44 @@ services:
     nginx:
         container_name: gh-trending_nginx
         image: nginx:alpine
-        ports:
-            - "${HTTP_PORT}:80"
+        expose:
+            - 80
         restart: unless-stopped
         volumes:
             - ./frontend/dist:/var/www
             - ./docker/nginx/nginx.conf:/etc/nginx/conf.d/default.conf:ro
         environment:
-            APP_DEV: ${APP_DEV}
+            VIRTUAL_HOST: ${APP_HOST:-localhost}
+            LETSENCRYPT_HOST: ${APP_HOST}
         depends_on:
             - backend-express
             - frontend-vite
+
+    nginx-proxy:
+        container_name: gh-trending_nginx-proxy
+        image: nginxproxy/nginx-proxy:1.7
+        ports:
+            - "${HTTP_PORT:-80}:${HTTP_PORT:-80}"
+            - "443:443"
+        restart: unless-stopped
+        volumes:
+            - ./docker/nginx/html:/usr/share/nginx/html
+            - ./docker/nginx/certs:/etc/nginx/certs:ro
+            - /var/run/docker.sock:/tmp/docker.sock:ro
+        environment:
+            TRUST_DOWNSTREAM_PROXY: false
+            HTTP_PORT: ${HTTP_PORT:-80}
+
+    acme-companion:
+        container_name: gh-trending_nginx-proxy-acme
+        image: nginxproxy/acme-companion:2.5
+        restart: unless-stopped
+        volumes_from:
+            - nginx-proxy
+        volumes:
+            - ./docker/nginx/certs:/etc/nginx/certs:rw
+            - ./docker/nginx/acme:/etc/acme.sh
+            - /var/run/docker.sock:/var/run/docker.sock:ro
 
     postgres:
         image: postgres
