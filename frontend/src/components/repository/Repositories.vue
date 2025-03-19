@@ -13,7 +13,7 @@ const route = useRoute()
 const router = useRouter()
 const toastHelper = useToastHelper()
 
-const apiUrl = 'http://localhost:3000/api/repositories'
+const apiUrl = `${import.meta.env.VITE_APP_URL}/api/repositories`
 const isLoading = ref(true)
 const isSyncing = ref(false)
 const repositories = ref<Repository[]>([])

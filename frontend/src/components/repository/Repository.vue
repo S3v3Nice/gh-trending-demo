@@ -13,7 +13,7 @@ const props = defineProps({
 })
 
 const toastHelper = useToastHelper()
-const apiUrl = `http://localhost:3000/api/repositories/${props.id ? props.id : `${props.ownerName}/${props.name}`}`
+const apiUrl = `${import.meta.env.VITE_APP_URL}/api/repositories/${props.id ? props.id : `${props.ownerName}/${props.name}`}`
 const isLoading = ref(true)
 const repository = ref<Repository | null>(null)
 

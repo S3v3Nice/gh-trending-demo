@@ -5,11 +5,15 @@ import axios from 'axios'
 import * as readline from 'node:readline'
 import {Key} from 'node:readline'
 import CliTable3 from 'cli-table3'
+import dotenv from 'dotenv'
+
+dotenv.config()
 
 const program = new Command()
-const API_URL = process.env.API_URL || 'http://localhost:3000/api/repositories'
+const API_URL = `${process.env.APP_URL}/api/repositories`
 
 async function handleRequest(requestFn: () => Promise<any>) {
+    console.log(API_URL)
     try {
         const response = await requestFn()
         return response.data;
